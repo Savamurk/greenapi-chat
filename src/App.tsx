@@ -5,7 +5,9 @@ import type { Credentials } from './api';
 import './App.css';
 
 type Message = { id: string; chatId: string; text: string; time: number; mine: boolean; status?: 'sending' | 'sent' | 'error' };
-type Chat = { chatId: string; title: string; lastTime: number };
+// aliases: другие идентификаторы того же собеседника (в MAX входящие приходят с внутренним id,
+// а исходящие уходят на номер@c.us), чтобы переписка лежала в одном чате.
+type Chat = { chatId: string; title: string; lastTime: number; aliases?: string[] };
 
 const LS_CREDS = 'greenapi-chat:creds';
 const LS_STATE = 'greenapi-chat:state';
@@ -74,8 +76,24 @@ export default function App() {
           failures = 0;
           setPollError('');
           if (inc) {
-            setMessages((prev) => (prev.some((m) => m.id === inc.idMessage) ? prev : [...prev, { id: inc.idMessage, chatId: inc.chatId, text: inc.text, time: inc.timestamp, mine: false }]));
-            touchChat(inc.chatId, inc.timestamp, inc.senderName);
+            // Ищем уже открытый чат с этим человеком: по его номеру (номер@c.us), по id или по алиасам.
+            const phoneChatId = inc.phone ? phoneToChatId(inc.phone) : null;
+            let key = inc.chatId;
+            setChats((prev) => {
+              const found = prev.find((c) => c.chatId === inc.chatId || c.aliases?.includes(inc.chatId) || (phoneChatId && (c.chatId === phoneChatId || c.aliases?.includes(phoneChatId))));
+              if (found) {
+                key = found.chatId;
+                const aliases = Array.from(new Set([...(found.aliases || []), inc.chatId, ...(phoneChatId ? [phoneChatId] : [])])).filter((a) => a !== found.chatId);
+                return prev
+                  .map((c) => (c.chatId === found.chatId ? { ...c, aliases, lastTime: Math.max(c.lastTime, inc.timestamp), title: inc.senderName || c.title } : c))
+                  .sort((a, b) => b.lastTime - a.lastTime);
+              }
+              // Новый собеседник: чат ведём по номеру, если он известен, иначе по id.
+              key = phoneChatId || inc.chatId;
+              const chat: Chat = { chatId: key, title: inc.senderName || (inc.phone ? '+' + inc.phone : chatIdToPhone(inc.chatId)), lastTime: inc.timestamp, aliases: key === inc.chatId ? [] : [inc.chatId] };
+              return [chat, ...prev];
+            });
+            setMessages((prev) => (prev.some((m) => m.id === inc.idMessage) ? prev : [...prev, { id: inc.idMessage, chatId: key, text: inc.text, time: inc.timestamp, mine: false }]));
           }
         } catch (e) {
           failures++;

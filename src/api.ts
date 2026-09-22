@@ -13,6 +13,8 @@ export type IncomingText = {
   idMessage: string;
   timestamp: number;
   senderName?: string;
+  // В MAX chatId входящего – внутренний id пользователя, номер приходит отдельным полем.
+  phone?: string;
 };
 
 const trimSlash = (s: string) => s.replace(/\/+$/, '');
@@ -78,7 +80,7 @@ type Notification = {
     typeWebhook: string;
     timestamp?: number;
     idMessage?: string;
-    senderData?: { chatId?: string; sender?: string; senderName?: string };
+    senderData?: { chatId?: string; sender?: string; senderName?: string; chatName?: string; senderPhoneNumber?: number | string };
     messageData?: {
       typeMessage?: string;
       textMessageData?: { textMessage?: string };
@@ -102,7 +104,8 @@ export async function pollOnce(c: Credentials, receiveTimeout = 5): Promise<Inco
           text,
           idMessage: b.idMessage || String(n.receiptId),
           timestamp: (b.timestamp || Math.floor(Date.now() / 1000)) * 1000,
-          senderName: b.senderData.senderName,
+          senderName: b.senderData.senderName || b.senderData.chatName,
+          phone: b.senderData.senderPhoneNumber ? String(b.senderData.senderPhoneNumber).replace(/\D/g, '') : undefined,
         };
       }
     }
