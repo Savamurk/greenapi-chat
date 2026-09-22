@@ -17,14 +17,15 @@ export type IncomingText = {
 
 const trimSlash = (s: string) => s.replace(/\/+$/, '');
 
-function url(c: Credentials, method: string) {
-  return `${trimSlash(c.apiUrl)}/waInstance${c.idInstance}/${method}/${c.apiTokenInstance}`;
+// Формат адреса: {apiUrl}/waInstance{id}/{method}/{token}[/{extraPath}][?query]
+function url(c: Credentials, method: string, extraPath = '', query = '') {
+  return `${trimSlash(c.apiUrl)}/waInstance${c.idInstance}/${method}/${c.apiTokenInstance}${extraPath}${query}`;
 }
 
-async function call<T>(c: Credentials, method: string, init?: RequestInit): Promise<T> {
+async function call<T>(c: Credentials, method: string, init?: RequestInit, opts: { extraPath?: string; query?: string } = {}): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(url(c, method), init);
+    res = await fetch(url(c, method, opts.extraPath, opts.query), init);
   } catch {
     throw new Error('Нет связи с GREEN-API: проверьте apiUrl и подключение к сети');
   }
@@ -89,7 +90,7 @@ type Notification = {
 // Один шаг опроса очереди: забрать уведомление, удалить его, вернуть текст, если это
 // входящее текстовое сообщение. Сервер держит соединение до receiveTimeout секунд.
 export async function pollOnce(c: Credentials, receiveTimeout = 5): Promise<IncomingText | null> {
-  const n = await call<Notification | null>(c, `receiveNotification?receiveTimeout=${receiveTimeout}`);
+  const n = await call<Notification | null>(c, 'receiveNotification', undefined, { query: `?receiveTimeout=${receiveTimeout}` });
   if (!n) return null;
   try {
     const b = n.body;
@@ -107,6 +108,6 @@ export async function pollOnce(c: Credentials, receiveTimeout = 5): Promise<Inco
     }
     return null;
   } finally {
-    await call(c, `deleteNotification/${n.receiptId}`, { method: 'DELETE' }).catch(() => {});
+    await call(c, 'deleteNotification', { method: 'DELETE' }, { extraPath: `/${n.receiptId}` }).catch(() => {});
   }
 }
