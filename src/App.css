@@ -1,0 +1,360 @@
+:root {
+  --bg: #eef0f4;
+  --panel: #ffffff;
+  --line: #e2e5ea;
+  --text: #1c1f26;
+  --muted: #7a808c;
+  --accent: #3b5bfd;
+  --accent-soft: #e7ecff;
+  --mine: #dfe7ff;
+  --radius: 14px;
+  font-family: Inter, 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+}
+
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 12px;
+}
+
+/* вход */
+.login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.login__card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--panel);
+  border-radius: 20px;
+  padding: 28px;
+  display: grid;
+  gap: 14px;
+  box-shadow: 0 10px 40px rgba(20, 30, 60, 0.08);
+}
+.login__card h1 {
+  margin: 0;
+  font-size: 22px;
+}
+.login__card p {
+  margin: -6px 0 4px;
+}
+.login__card label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.login__card input {
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f7f8fa;
+  color: var(--text);
+}
+.login__card input:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+.login__card button[type='submit'] {
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.login__card button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.error {
+  background: #fff1f0;
+  color: #b42318;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+/* раскладка */
+.app {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  background: var(--panel);
+}
+
+.sidebar {
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.sidebar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.me {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.me__title {
+  font-weight: 600;
+  font-size: 14px;
+}
+.ghost {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--muted);
+}
+.ghost:hover {
+  color: var(--text);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 13px;
+  flex: 0 0 auto;
+}
+.avatar--me {
+  background: var(--accent);
+  color: #fff;
+}
+
+.newchat {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.newchat input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f7f8fa;
+}
+.newchat button {
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.newchat button:disabled {
+  background: var(--line);
+  color: var(--muted);
+  cursor: default;
+}
+
+.chats {
+  overflow-y: auto;
+  flex: 1;
+  padding: 6px;
+}
+.empty {
+  padding: 20px 12px;
+  text-align: center;
+}
+.chat {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  text-align: left;
+  color: var(--text);
+}
+.chat:hover {
+  background: #f3f5f9;
+}
+.chat--active {
+  background: var(--accent-soft);
+}
+.chat__body {
+  min-width: 0;
+  flex: 1;
+}
+.chat__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.chat__title {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat__time {
+  font-size: 12px;
+  color: var(--muted);
+}
+.chat__last {
+  font-size: 13px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--bg);
+  position: relative;
+}
+.thread__empty {
+  margin: auto;
+}
+.thread__head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.thread__title {
+  font-weight: 600;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bubble {
+  max-width: min(70%, 560px);
+  background: var(--panel);
+  border-radius: var(--radius);
+  border-bottom-left-radius: 4px;
+  padding: 8px 12px 6px;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.bubble--mine {
+  background: var(--mine);
+  align-self: flex-end;
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: 4px;
+}
+.bubble__text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.35;
+}
+.bubble__meta {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  margin-top: 2px;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+}
+.composer input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f7f8fa;
+}
+.composer input:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+.composer button {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.composer button:disabled {
+  background: var(--line);
+  color: var(--muted);
+  cursor: default;
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 76px;
+  transform: translateX(-50%);
+  background: #1c1f26;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  max-width: 90%;
+}
+
+@media (max-width: 720px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    max-height: 45vh;
+  }
+  .bubble {
+    max-width: 88%;
+  }
+}
