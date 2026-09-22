@@ -1,7 +1,8 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+// base задаётся при сборке на GitHub Pages (VITE_BASE=/имя-репозитория/), локально корень
 export default defineConfig({
+  base: process.env.VITE_BASE || '/',
   plugins: [react()],
 })
